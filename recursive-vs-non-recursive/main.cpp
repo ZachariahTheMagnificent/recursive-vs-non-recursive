@@ -4,11 +4,10 @@
 #include <random>
 
 using namespace std::chrono_literals;
+using int_array = std::vector<int>;
 
 int main()
 {
-	using int_array = std::vector<int>;
-
 	constexpr auto num_elements = 8'000'000;
 	constexpr auto seed = 490u;
 	
