@@ -6,6 +6,13 @@
 using namespace std::chrono_literals;
 using int_array = std::vector<int>;
 
+struct range
+{
+	int_array::iterator begin;
+	int_array::iterator end;
+};
+using range_array = std::vector<range>;
+
 int main()
 {
 	constexpr auto num_elements = 8'000'000;
@@ -23,6 +30,51 @@ int main()
 	}
 
 	const auto start_point = std::chrono::steady_clock::now();
+
+	if(array.size() > 1)
+	{
+		auto ranges_to_sort = range_array{};
+		ranges_to_sort.push_back(range{array.begin(), array.end()});
+
+		while(!ranges_to_sort.empty())
+		{
+			auto new_ranges_to_sort = range_array{};
+
+			for(auto& element : ranges_to_sort)
+			{
+				const auto lower_range_begin = element.begin;
+				const auto upper_range_end = element.end;
+				const auto median = *lower_range_begin;
+
+				auto lower_range_end = lower_range_begin + 1;
+				for(auto it = lower_range_end; it != element.end; ++it)
+				{
+					const auto value = *it;
+					if(value <= median)
+					{
+						*it = *lower_range_end;
+						*lower_range_end = value;
+						++lower_range_end;
+					}
+				}
+				const auto lower_range_last = lower_range_end - 1;
+				const auto upper_range_begin = lower_range_end;
+
+				*lower_range_begin = *lower_range_last;
+				*lower_range_last = median;
+
+				if(lower_range_begin != lower_range_last)
+				{
+					new_ranges_to_sort.push_back(range{lower_range_begin, lower_range_last});
+				}
+				if(upper_range_begin != upper_range_end)
+				{
+					new_ranges_to_sort.push_back(range{upper_range_begin, upper_range_end});
+				}
+			}
+			ranges_to_sort = std::move(new_ranges_to_sort);
+		}
+	}
 
 	const auto end_point = std::chrono::steady_clock::now();
 
