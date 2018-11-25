@@ -52,7 +52,7 @@ int main()
 	constexpr auto seed = 490u;
 	
 	auto rng = std::mt19937{seed};
-	auto random_int = std::uniform_int_distribution<int>{std::numeric_limits<int>::min()};
+	auto random_int = std::uniform_int_distribution<int>{};
 
 	auto array = int_array{};
 	array.resize(num_elements);
