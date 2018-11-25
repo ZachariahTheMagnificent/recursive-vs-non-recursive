@@ -34,11 +34,11 @@ int main()
 	if(array.size() > 1)
 	{
 		auto ranges_to_sort = range_array{};
+		auto new_ranges_to_sort = range_array{};
 		ranges_to_sort.push_back(range{array.begin(), array.end()});
 
 		while(!ranges_to_sort.empty())
 		{
-			auto new_ranges_to_sort = range_array{};
 
 			for(auto& element : ranges_to_sort)
 			{
@@ -72,7 +72,8 @@ int main()
 					new_ranges_to_sort.push_back(range{upper_range_begin, upper_range_end});
 				}
 			}
-			ranges_to_sort = std::move(new_ranges_to_sort);
+			ranges_to_sort.swap(new_ranges_to_sort);
+			new_ranges_to_sort.clear();
 		}
 	}
 
