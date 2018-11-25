@@ -29,12 +29,15 @@ int main()
 		element = random_int(rng);
 	}
 
+	auto ranges_to_sort = range_array{};
+	auto new_ranges_to_sort = range_array{};
+
+	ranges_to_sort.reserve(1000);
+	new_ranges_to_sort.reserve(1000);
 	const auto start_point = std::chrono::steady_clock::now();
 
 	if(array.size() > 1)
 	{
-		auto ranges_to_sort = range_array{};
-		auto new_ranges_to_sort = range_array{};
 		ranges_to_sort.push_back(range{array.begin(), array.end()});
 
 		while(!ranges_to_sort.empty())
