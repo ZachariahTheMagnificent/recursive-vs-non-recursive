@@ -8,30 +8,35 @@ using int_array = std::vector<int>;
 
 void quick_sort(const int_array::iterator begin, const int_array::iterator end)
 {
-	if(end - begin > 1)
+	const auto length = end - begin;
+	auto accumulation = 0ll;
+	for(auto it = begin; it != end; ++it)
 	{
-		const auto median = *begin;
+		accumulation += *it;
+	}
 
-		const auto lower_bound_begin = begin;
-		const auto upper_bound_end = end;
+	const auto median = static_cast<int>(accumulation / length);
 
-		auto lower_bound_end = lower_bound_begin + 1;
+	const auto lower_bound_begin = begin;
+	const auto upper_bound_end = end;
 
-		for(auto it = lower_bound_end; it != end; ++it)
+	auto lower_bound_end = begin;
+
+	for(auto it = begin; it != end; ++it)
+	{
+		const auto value = *it;
+		if(value <= median)
 		{
-			const auto value = *it;
-			if(value <= median)
-			{
-				*it = *lower_bound_end;
-				*lower_bound_end = value;
-				++lower_bound_end;
-			}
+			*it = *lower_bound_end;
+			*lower_bound_end = value;
+			++lower_bound_end;
 		}
-		const auto lower_bound_last = lower_bound_end - 1;
-		*begin = *lower_bound_last;
-		*lower_bound_last = median;
+	}
 
-		quick_sort(lower_bound_begin, lower_bound_last);
+	// If the upper bound is not empty.
+	if(lower_bound_end != end)
+	{
+		quick_sort(lower_bound_begin, lower_bound_end);
 		quick_sort(lower_bound_end, upper_bound_end);
 	}
 }
@@ -47,7 +52,7 @@ int main()
 	constexpr auto seed = 490u;
 	
 	auto rng = std::mt19937{seed};
-	auto random_int = std::uniform_int_distribution<int>{};
+	auto random_int = std::uniform_int_distribution<int>{std::numeric_limits<int>::min()};
 
 	auto array = int_array{};
 	array.resize(num_elements);
