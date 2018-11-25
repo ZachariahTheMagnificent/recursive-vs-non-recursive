@@ -30,10 +30,8 @@ int main()
 	}
 
 	auto ranges_to_sort = range_array{};
-	auto new_ranges_to_sort = range_array{};
 
 	ranges_to_sort.reserve(1000);
-	new_ranges_to_sort.reserve(1000);
 	const auto start_point = std::chrono::steady_clock::now();
 
 	if(array.size() > 1)
@@ -42,41 +40,39 @@ int main()
 
 		while(!ranges_to_sort.empty())
 		{
+			const auto element = ranges_to_sort.back();
 
-			for(auto& element : ranges_to_sort)
+			const auto lower_range_begin = element.begin;
+			const auto upper_range_end = element.end;
+			const auto median = *lower_range_begin;
+
+			auto lower_range_end = lower_range_begin + 1;
+			for(auto it = lower_range_end; it != element.end; ++it)
 			{
-				const auto lower_range_begin = element.begin;
-				const auto upper_range_end = element.end;
-				const auto median = *lower_range_begin;
-
-				auto lower_range_end = lower_range_begin + 1;
-				for(auto it = lower_range_end; it != element.end; ++it)
+				const auto value = *it;
+				if(value <= median)
 				{
-					const auto value = *it;
-					if(value <= median)
-					{
-						*it = *lower_range_end;
-						*lower_range_end = value;
-						++lower_range_end;
-					}
-				}
-				const auto lower_range_last = lower_range_end - 1;
-				const auto upper_range_begin = lower_range_end;
-
-				*lower_range_begin = *lower_range_last;
-				*lower_range_last = median;
-
-				if(lower_range_begin != lower_range_last)
-				{
-					new_ranges_to_sort.push_back(range{lower_range_begin, lower_range_last});
-				}
-				if(upper_range_begin != upper_range_end)
-				{
-					new_ranges_to_sort.push_back(range{upper_range_begin, upper_range_end});
+					*it = *lower_range_end;
+					*lower_range_end = value;
+					++lower_range_end;
 				}
 			}
-			ranges_to_sort.swap(new_ranges_to_sort);
-			new_ranges_to_sort.clear();
+			const auto lower_range_last = lower_range_end - 1;
+			const auto upper_range_begin = lower_range_end;
+
+			*lower_range_begin = *lower_range_last;
+			*lower_range_last = median;
+
+			ranges_to_sort.pop_back();
+
+			if(upper_range_begin != upper_range_end)
+			{
+				ranges_to_sort.push_back(range{upper_range_begin, upper_range_end});
+			}
+			if(lower_range_begin != lower_range_last)
+			{
+				ranges_to_sort.push_back(range{lower_range_begin, lower_range_last});
+			}
 		}
 	}
 
